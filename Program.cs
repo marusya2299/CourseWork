@@ -72,7 +72,7 @@ namespace Store
 
                     Input = Console.ReadLine();
 
-                    if (Int32.TryParse(Input, out Number) && Number <= Operation.Maximum && Number > Operation.Minimum)
+                    if (Int32.TryParse(Input, out Number) && Number > 0)
                     {
                          Order.AddQuantity(Number);
                          Stage = 2;
