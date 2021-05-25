@@ -32,16 +32,14 @@ namespace Store
 
             bool Flag = true, Value; 
             int Number = 0;
-            int Stage = 0;
+            int Stage = 4;
             string Input;
-
+            int Counter = 0;
+            int p = 0;
             List<int> Check = new List<int>() { };
 
             Order Order = new Order();
 
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("|||||||||\nNew order\n|||||||||");
-            Console.ResetColor();
 
             while (Flag)
             {
@@ -56,6 +54,7 @@ namespace Store
                     {
                         Check.Add(Number - 1);
                         Order.AddProduct(Products[Number - 1]);
+                        p++;
                         Stage = 1;
                     }
                     else
@@ -101,9 +100,13 @@ namespace Store
                             Check.Clear();
                             Stage = 3;
                         }
-                        else if (Number == 1)
+                        else if (Number == 1 && p < n)
                         {
                             Stage = 0;
+                        }
+                        else if(Number == 1 && p == n)
+                        {
+                            Stage = 3;
                         }
                     }
                     else
@@ -126,25 +129,34 @@ namespace Store
 
                         Order.Delete(Order.NumberOfOrders);
                     }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\nThere isn't enough product in storage, your order was put in queue.\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+                        Console.ResetColor();
+                    }
 
-                    Console.WriteLine("Finish work - 0\nCreate another order - 1");
+                    Stage = 4;
+                }
+
+                if (Stage == 4)
+                {
+
+                    Console.WriteLine("Finish work - 0\nCreate new order - 1");
                     Console.Write("--->");
                     Input = Console.ReadLine();
 
                     if (Int32.TryParse(Input, out Number) && (Number == 1 || Number == 0))
                     {
-                        if (Number == 0)
+                        if (Number == 0 && Counter != 0)
                         {
-                            Operation.CheckForAvailability(Order.OrderProducts, Order.OrderQuantity, Order.QuantityInOrder, Order.NumberOfOrders + 1);
-
                             Operation.DeliveryToTheWarehouse();
-
-                            Value = Operation.CheckForAvailability(Order.OrderProducts, Order.OrderQuantity, Order.QuantityInOrder, Order.NumberOfOrders + 1);
-
                             Console.ForegroundColor = ConsoleColor.DarkRed;
                             Console.WriteLine("||||||||||||||||||||||||||||||\nWarehouse has been replenished\n||||||||||||||||||||||||||||||");
 
-                            if (Value)
+                            Value = Operation.CheckForAvailability(Order.OrderProducts, Order.OrderQuantity, Order.QuantityInOrder, Order.NumberOfOrders + 1);
+
+                            if(Value)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 for (int i = 0; i < Order.NumberOfOrders + 1; i++)
@@ -157,15 +169,29 @@ namespace Store
                                 Console.ResetColor();
                             }
 
+                            Console.WriteLine("|||||||||||||||\nWork completed.\n|||||||||||||||");
                             Flag = false;
                         }
-                        else if (Number == 1)
+                        else if (Number == 0 && Counter == 0)
+                        {
+                            Console.WriteLine("|||||||||||||||\nWork completed.\n|||||||||||||||");
+                            Flag = false;
+                        }
+                        else if (Number == 1 && Counter != 0)
                         {
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
                             Console.WriteLine("|||||||||\nNew order\n|||||||||");
                             Console.ResetColor();
-
+                            Counter++;
                             Order.New();
+                            Stage = 0;
+                        }
+                        else if(Number == 1 && Counter == 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.WriteLine("|||||||||\nNew order\n|||||||||");
+                            Console.ResetColor();
+                            Counter++;
                             Stage = 0;
                         }
                     }
