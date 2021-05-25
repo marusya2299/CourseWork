@@ -4,27 +4,6 @@ namespace ClassLibrary
 {
     public class Storage
     {
-        private int MaximumQuantity, MinimumQuantity = 0;
-        public int Minimum
-        { 
-            get
-            {
-                return MinimumQuantity;
-            }
-        }
-
-        public int Maximum
-        {
-            get
-            {
-                return MaximumQuantity;
-            }
-            set
-            {
-                MaximumQuantity = value;
-            }
-        }
-
         private int n; //number of products
         public List<Product> Products = new List<Product>() { };
 
